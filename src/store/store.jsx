@@ -90,40 +90,40 @@ export function StoreProvider({ children }) {
   const add = useCallback((col, item, prefix) => {
     const rec = { id: uid(prefix || col.slice(0, 1).toUpperCase()), ...item };
     setDb((d) => ({ ...d, [col]: [rec, ...(d[col] || [])] }));
-    sync(() => api(`/c/${col}`, { method: "POST", body: rec }));
+    sync(() => api(`/${col}`, { method: "POST", body: rec }));
     return rec;
   }, [sync]);
   const update = useCallback((col, id, patch) => {
     const cur = (dbRef.current[col] || []).find((r) => r.id === id);
     const p = typeof patch === "function" ? (cur ? patch(cur) : {}) : patch;
     setDb((d) => ({ ...d, [col]: (d[col] || []).map((r) => (r.id === id ? { ...r, ...p } : r)) }));
-    sync(() => api(`/c/${col}/${encodeURIComponent(id)}`, { method: "PATCH", body: p }));
+    sync(() => api(`/${col}/${encodeURIComponent(id)}`, { method: "PATCH", body: p }));
   }, [sync]);
   const remove = useCallback((col, id) => {
     setDb((d) => ({ ...d, [col]: (d[col] || []).filter((r) => r.id !== id) }));
-    sync(() => api(`/c/${col}/${encodeURIComponent(id)}`, { method: "DELETE" }));
+    sync(() => api(`/${col}/${encodeURIComponent(id)}`, { method: "DELETE" }));
   }, [sync]);
   const setSettings = useCallback((section, patch) => {
     const prev = dbRef.current.settings[section];
     const value = typeof patch === "object" && patch && !Array.isArray(patch) && prev && typeof prev === "object" ? { ...prev, ...patch } : patch;
     setDb((d) => ({ ...d, settings: { ...d.settings, [section]: value } }));
-    sync(() => api(`/kv/settings/${section}`, { method: "PUT", body: { value } }));
+    sync(() => api(`/settings/${section}`, { method: "PUT", body: { value } }));
   }, [sync]);
   const setAttendance = useCallback((date, empId, rec) => {
     const key = `${date}|${empId}`;
     setDb((d) => { const next = { ...d.attendance }; if (rec == null) delete next[key]; else next[key] = rec; return { ...d, attendance: next }; });
-    sync(() => api("/kv/attendance", { method: "PUT", body: { key, value: rec ?? null } }));
+    sync(() => api("/attendance", { method: "PUT", body: { key, value: rec ?? null } }));
   }, [sync]);
   const notify = useCallback((title, text, link = "/") => {
     add("notifications", { title, text, link, at: new Date().toISOString(), read: false }, "n");
   }, [add]);
   const setAppConnection = useCallback((key, val) => {
     setDb((d) => ({ ...d, appConnections: { ...(d.appConnections || {}), [key]: val } }));
-    sync(() => api(`/kv/appConnections/${key}`, { method: "PUT", body: { value: val } }));
+    sync(() => api(`/app-connections/${key}`, { method: "PUT", body: { value: val } }));
   }, [sync]);
   const markAllRead = useCallback(() => {
     setDb((d) => ({ ...d, notifications: d.notifications.map((n) => ({ ...n, read: true })) }));
-    sync(() => api("/c/notifications/read-all", { method: "POST" }));
+    sync(() => api("/notifications/read-all", { method: "POST" }));
   }, [sync]);
 
   // Replace ALL data (sample data or a backup file). API mode: admin only, saved to MongoDB.

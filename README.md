@@ -20,13 +20,31 @@ npm run dev                     # restart the frontend after creating .env.local
 - Sign in, then use **Settings → Data & Backup → Reset demo data** to load sample data into MongoDB, or **Import data** to restore a JSON backup.
 - **Auth:** JWT (7 days), bcrypt-hashed passwords. Password hashes are never sent to the browser.
 - **Permissions:** the same role/module rules as the UI, enforced on the server. A user without access to a module can't read or change its data, and only an Admin can manage users, company, bank or invoice settings.
-- **API:**
-  - `POST /api/auth/login`
-  - `GET /api/bootstrap`
-  - `POST|PATCH|DELETE /api/c/:collection[/:id]`
-  - `PUT /api/kv/settings/:section`
-  - `PUT /api/kv/attendance`
-  - `POST /api/admin/import`
+- **API** (all under `/api`; every route except login needs `Authorization: Bearer <token>`):
+  - `POST /auth/login` · `GET /auth/me` · `POST /auth/change-password`
+  - `GET|POST /users` · `GET|PATCH|DELETE /users/:id`
+  - `GET|POST /<resource>` · `GET|PATCH|DELETE /<resource>/:id` for every resource: `leads`, `contacts`, `companies`, `quotations`, `invoices`, `projects`, `tasks`, `expenses`, `employees`, `tickets`, `products`, `campaigns`, and the rest listed in `server/src/models/index.js`
+  - `GET /bootstrap` · `POST /admin/import`
+  - `GET /settings` · `PUT /settings/:section` · `PUT /attendance` · `PUT /app-connections/:key` · `POST /notifications/read-all`
+
+### Server structure
+
+```
+server/src/
+  server.js            entry: connect DB, start listening
+  app.js               express app: cors, json, routes, errors
+  config/              env.js (reads .env), db.js (Mongoose + first admin), roles.js
+  models/              User, Lead, Contact, Company, Document (Quotation/Invoice), Project,
+                       Operations (Task, Expense, Employee, Ticket, Product, Campaign),
+                       KeyValue (settings/attendance/app connections), base.js, index.js (registry)
+  controllers/         authController, userController, crudController (generic CRUD),
+                       dataController (bootstrap/import), settingsController, notificationController
+  routes/              authRoutes, userRoutes, resourceRoutes (REST per resource), index.js
+  middleware/          auth.js (JWT protect), permission.js (role/module rules), errorHandler.js
+  utils/helpers.js     asyncHandler, httpError, toClient/fromClient
+```
+
+To add a new module: create a model in `models/`, register it in `models/index.js` with its module key. Its REST routes are created automatically.
 - **MongoDB Atlas → Network Access** must allow the IP of wherever the API runs. For a hosted API (Render, Railway and similar), add that host's IP or `0.0.0.0/0`.
 
 ## Run it
