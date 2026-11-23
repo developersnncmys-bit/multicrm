@@ -15,9 +15,11 @@ const ACCENTS = [["indigo", "#4f46e5"], ["violet", "#7c3aed"], ["sky", "#0284c7"
 const STEPS = ["Business type", "Company", "Modules", "Finish"];
 
 export function SetupBanner() {
-  const { db, user } = useStore();
+  const { db, user, setSettings } = useStore();
   const [hidden, setHidden] = useState(() => { try { return sessionStorage.getItem("nexora_setup_hide") === "1"; } catch { return false; } });
-  if (user?.role !== "Admin" || db.settings.workspace?.setupDone || hidden) return null;
+  const ws = db.settings.workspace || {};
+  // Hidden for good once setup is finished or the admin dismisses it (saved with the workspace, not the browser tab)
+  if (user?.role !== "Admin" || ws.setupDone || ws.hideSetupBanner || hidden) return null;
   return (
     <div className="mb-6 flex flex-col gap-3 rounded-xl border border-brand-200 bg-gradient-to-r from-brand-50 to-white p-4 dark:border-brand-500/30 dark:from-brand-500/10 dark:to-slate-900 sm:flex-row sm:items-center">
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white"><Sparkles className="h-5 w-5" /></span>
@@ -27,6 +29,7 @@ export function SetupBanner() {
       </div>
       <div className="flex gap-2">
         <Button variant="ghost" size="sm" onClick={() => { setHidden(true); try { sessionStorage.setItem("nexora_setup_hide", "1"); } catch { /* ignore */ } }}>Later</Button>
+        <Button variant="ghost" size="sm" onClick={() => setSettings("workspace", { hideSetupBanner: true })} title="You can still run setup from Settings → Workspace & Modules">Don't show again</Button>
         <Button size="sm" icon={Rocket} onClick={openSetupWizard}>Start setup</Button>
       </div>
     </div>
