@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, ArrowRight, ArrowLeft, CheckCircle2, BarChart3, Receipt, Users, ShieldCheck, KeyRound } from "lucide-react";
 import { useStore } from "../store/store";
+import { apiMode } from "../api/client";
 import { BRAND } from "../config/brand";
 import { Button } from "../components/ui";
 
@@ -16,8 +17,8 @@ export default function Login() {
   const { user, login } = useStore();
   const nav = useNavigate();
   const loc = useLocation();
-  const [email, setEmail] = useState("admin@nnc.in");
-  const [pw, setPw] = useState("admin123");
+  const [email, setEmail] = useState(apiMode ? "" : "admin@nnc.in");
+  const [pw, setPw] = useState(apiMode ? "" : "admin123");
   const [show, setShow] = useState(false);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -29,11 +30,11 @@ export default function Login() {
     e.preventDefault();
     if (!email || !pw) return setErr("Enter your email and password");
     setBusy(true); setErr("");
-    setTimeout(() => {
-      const res = login(email, pw);
+    setTimeout(async () => {
+      const res = await login(email, pw);
       setBusy(false);
       if (res) setErr(res); else nav(loc.state?.from || "/", { replace: true });
-    }, 450);
+    }, apiMode ? 0 : 450);
   };
 
   return (
@@ -105,7 +106,7 @@ export default function Login() {
                   {busy ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : <>Sign in <ArrowRight className="h-4 w-4" /></>}
                 </Button>
               </form>
-              <div className="mt-8 rounded-2xl border border-dashed border-slate-200 p-4 dark:border-slate-700">
+              {!apiMode && <div className="mt-8 rounded-2xl border border-dashed border-slate-200 p-4 dark:border-slate-700">
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Demo accounts — click to fill</p>
                 <div className="mt-3 grid gap-2 sm:grid-cols-3">
                   {DEMO.map((d) => (
@@ -115,7 +116,7 @@ export default function Login() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div>}
             </>
           ) : (
             <ForgotFlow onBack={() => setForgot(false)} />

@@ -172,7 +172,7 @@ function Appearance() {
 }
 
 function DataBackup() {
-  const { db, resetDemo } = useStore();
+  const { db, resetDemo, importAll, apiMode } = useStore();
   const toast = useToast();
   const confirm = useConfirm();
   const fileRef = useRef(null);
@@ -195,8 +195,17 @@ function DataBackup() {
           <Button variant="secondary" icon={Download} onClick={exportJSON}>Export JSON</Button>
         </div>
         <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 sm:flex-row sm:items-center">
-          <div className="flex-1"><p className="font-semibold text-slate-800 dark:text-slate-100">Import data</p><p className="text-sm text-slate-500">Bulk-import leads or restore a backup file.</p></div>
-          <input ref={fileRef} type="file" accept=".json,.csv" className="hidden" onChange={(e) => { if (e.target.files?.[0]) toast("Import will be available once the backend is connected", "info"); e.target.value = ""; }} />
+          <div className="flex-1"><p className="font-semibold text-slate-800 dark:text-slate-100">Import data</p><p className="text-sm text-slate-500">Restore a JSON backup exported from this CRM. Replaces all current data.</p></div>
+          <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={async (e) => {
+            const f = e.target.files?.[0]; e.target.value = "";
+            if (!f) return;
+            try {
+              const data = JSON.parse(await f.text());
+              if (!Array.isArray(data.users) || !data.settings) throw new Error("This isn't a CRM backup file");
+              if (!(await confirm({ title: "Restore this backup?", message: `All current data will be replaced with “${f.name}”.`, confirmText: "Restore" }))) return;
+              await importAll(data); toast(apiMode ? "Backup restored to the database" : "Backup restored");
+            } catch (err) { toast(err.message || "Could not read the file", "error"); }
+          }} />
           <Button variant="secondary" icon={Upload} onClick={() => fileRef.current?.click()}>Choose file</Button>
         </div>
         <div className="flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50/50 p-4 dark:border-rose-500/30 dark:bg-rose-500/5 sm:flex-row sm:items-center">

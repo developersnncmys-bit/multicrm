@@ -2,4 +2,7 @@ node_modules
 dist
 _backup
 .env
+.env.*
+!.env.example
 *.local
+server/.env

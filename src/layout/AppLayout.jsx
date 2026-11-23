@@ -299,7 +299,7 @@ function Topbar({ onMenu, onSearch }) {
 }
 
 export default function AppLayout() {
-  const { user } = useStore();
+  const { user, syncError, clearSyncError } = useStore();
   const [collapsed, setCollapsed] = useState(() => { try { return localStorage.getItem("nexora_sb") === "1"; } catch { return false; } });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [palette, setPalette] = useState(false);
@@ -317,6 +317,12 @@ export default function AppLayout() {
       <div className={cx("transition-all duration-300", collapsed ? "lg:pl-[76px]" : "lg:pl-64")}>
         <Topbar onMenu={() => setMobileOpen(true)} onSearch={() => setPalette(true)} />
         <main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+          {syncError && (
+            <div className="mb-4 flex items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+              <span className="flex-1"><b>Couldn't save your last change:</b> {syncError} The screen has been refreshed from the server.</span>
+              <button onClick={clearSyncError} className="rounded p-1 hover:bg-rose-100 dark:hover:bg-rose-500/20"><X className="h-4 w-4" /></button>
+            </div>
+          )}
           <Outlet />
         </main>
       </div>

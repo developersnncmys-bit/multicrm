@@ -2,7 +2,32 @@
 
 A white-label CRM you can set up for any client: agencies, real estate, education, clinics, manufacturers or professional services. It is built with **React 18, Vite, Tailwind CSS, Recharts and lucide-react**.
 
-This version is **frontend only**. All data is demo data stored in the browser's localStorage, so every screen works end-to-end without a backend.
+The app runs in two modes:
+- **Demo mode** (default): no backend; data lives in the browser's localStorage.
+- **Live mode**: set `VITE_API_URL` and the app signs in and saves everything to MongoDB through the Node.js API in `server/`.
+
+## Backend (Node.js + MongoDB)
+
+```bash
+npm run server:install          # first time
+cp server/.env.example server/.env   # then fill in MONGODB_URI, JWT_SECRET, ADMIN_EMAIL/PASSWORD
+npm run server                  # API on http://localhost:5000/api
+echo VITE_API_URL=http://localhost:5000/api > .env.local
+npm run dev                     # restart the frontend after creating .env.local
+```
+
+- On first start the server creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+- Sign in, then use **Settings → Data & Backup → Reset demo data** to load sample data into MongoDB, or **Import data** to restore a JSON backup.
+- **Auth:** JWT (7 days), bcrypt-hashed passwords. Password hashes are never sent to the browser.
+- **Permissions:** the same role/module rules as the UI, enforced on the server. A user without access to a module can't read or change its data, and only an Admin can manage users, company, bank or invoice settings.
+- **API:**
+  - `POST /api/auth/login`
+  - `GET /api/bootstrap`
+  - `POST|PATCH|DELETE /api/c/:collection[/:id]`
+  - `PUT /api/kv/settings/:section`
+  - `PUT /api/kv/attendance`
+  - `POST /api/admin/import`
+- **MongoDB Atlas → Network Access** must allow the IP of wherever the API runs. For a hosted API (Render, Railway and similar), add that host's IP or `0.0.0.0/0`.
 
 ## Run it
 
