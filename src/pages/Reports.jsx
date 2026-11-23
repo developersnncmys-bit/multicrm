@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Cell } from "recharts";
 import { Download, Printer, TrendingUp, TrendingDown, Wallet, Receipt, Percent, Trophy, Target, Clock, Users, IndianRupee, Building2, Award } from "lucide-react";
 import { useStore } from "../store/store";
@@ -40,7 +41,12 @@ export default function Reports() {
   const { db } = useStore();
   const [period, setPeriod] = useState("6m");
   const [branch, setBranch] = useState("");
-  const [tab, setTab] = useState("pnl");
+  // Tab lives in the URL so the sidebar links (Leaderboard, Branch Reports) open the right tab
+  const [params, setParams] = useSearchParams();
+  const URL_TO_TAB = { leaderboard: "team", branches: "branch", sales: "sales", gst: "gst" };
+  const TAB_TO_URL = { team: "leaderboard", branch: "branches", sales: "sales", gst: "gst" };
+  const tab = URL_TO_TAB[params.get("tab")] || "pnl";
+  const setTab = (t) => setParams(TAB_TO_URL[t] ? { tab: TAB_TO_URL[t] } : {}, { replace: true });
   const { from, to } = periodRange(period);
   const months = monthsIn(from, to);
   const inRange = (d) => d && d.slice(0, 10) >= from && d.slice(0, 10) <= to;
@@ -147,7 +153,7 @@ export default function Reports() {
 
   return (
     <div>
-      <PageHeader title="Reports & P&L" subtitle={`${periodLabel} · ${branch || "All branches"}`}
+      <PageHeader title={{ pnl: "Profit & Loss", sales: "Sales Reports", team: "Sales Leaderboard", branch: "Branch Reports", gst: "GST Summary" }[tab]} subtitle={`${periodLabel} · ${branch || "All branches"}`}
         actions={<>
           <Select value={period} onChange={(e) => setPeriod(e.target.value)} options={PERIODS} className="w-44" />
           <Select value={branch} onChange={(e) => setBranch(e.target.value)} options={BRANCHES} placeholder="All branches" className="w-40" />
