@@ -123,7 +123,7 @@ export default function seedAdmin(db) {
         { name: "Mysore", rent: 22000, dueDay: 5, notes: "Kuvempunagar" },
         { name: "Mumbai", rent: 60000, dueDay: 7, notes: "Andheri East co-working" },
       ],
-      invoiceSeries: { proformaPrefix: "NXR/PRF", taxPrefix: "NXR/TAX", fiscalYear: true, digits: 4 },
+      invoiceSeries: { proformaPrefix: "NNC/PRF", taxPrefix: "NNC/TAX", fiscalYear: true, digits: 4 },
       reports: { enabled: true, schedule: "1st & 16th of every month at 8:00 AM IST", sections: [...REPORT_SECTIONS], email: "owner@company.in" },
       monthlyTargets,
       calendar: { workFrom: "09:30", workTo: "19:00", workDays: [1, 2, 3, 4, 5, 6], gapMins: 15, alertMins: 10, officeAddress: db.settings.company?.address || "" },

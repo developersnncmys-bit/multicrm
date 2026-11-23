@@ -6,17 +6,17 @@ import { BRAND } from "../config/brand";
 import { Button } from "../components/ui";
 
 const DEMO = [
-  { role: "Admin", email: "admin@nexora.in", pw: "admin123" },
-  { role: "Sales Manager", email: "kiran@nexora.in", pw: "demo123" },
-  { role: "Accountant", email: "sowmya@nexora.in", pw: "demo123" },
-  { role: "Support Agent", email: "meena@nexora.in", pw: "demo123" },
+  { role: "Admin", email: "admin@nnc.in", pw: "admin123" },
+  { role: "Sales Manager", email: "kiran@nnc.in", pw: "demo123" },
+  { role: "Accountant", email: "sowmya@nnc.in", pw: "demo123" },
+  { role: "Support Agent", email: "meena@nnc.in", pw: "demo123" },
 ];
 
 export default function Login() {
   const { user, login } = useStore();
   const nav = useNavigate();
   const loc = useLocation();
-  const [email, setEmail] = useState("admin@nexora.in");
+  const [email, setEmail] = useState("admin@nnc.in");
   const [pw, setPw] = useState("admin123");
   const [show, setShow] = useState(false);
   const [err, setErr] = useState("");

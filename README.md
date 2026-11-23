@@ -1,4 +1,4 @@
-# Nexora CRM: UI Prototype
+# NNC CRM: UI Prototype
 
 A white-label CRM you can set up for any client: agencies, real estate, education, clinics, manufacturers or professional services. It is built with **React 18, Vite, Tailwind CSS, Recharts and lucide-react**.
 
@@ -16,12 +16,12 @@ npm run build    # production build in /dist
 
 | Role | Email | Password |
 |---|---|---|
-| Admin (all modules) | admin@nexora.in | admin123 |
-| Sales Manager | kiran@nexora.in | demo123 |
-| Accountant | sowmya@nexora.in | demo123 |
-| Sales Executive | divya@nexora.in | demo123 |
-| Project Manager | rakesh@nexora.in | demo123 |
-| Support Agent | meena@nexora.in | demo123 |
+| Admin (all modules) | admin@nnc.in | admin123 |
+| Sales Manager | kiran@nnc.in | demo123 |
+| Accountant | sowmya@nnc.in | demo123 |
+| Sales Executive | divya@nnc.in | demo123 |
+| Project Manager | rakesh@nnc.in | demo123 |
+| Support Agent | meena@nnc.in | demo123 |
 
 The sidebar and page access change with the role you log in as.
 

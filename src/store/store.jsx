@@ -20,6 +20,8 @@ function load() {
       const industry = saved.settings?.workspace?.industry || "general";
       const fresh = buildSeed(industry);
       const db = { ...fresh, ...saved, settings: { ...fresh.settings, ...saved.settings } };
+      // Product renamed Nexora → NNC: move old demo logins to the new email domain
+      db.users = (db.users || []).map((u) => (u.email?.endsWith("@nexora.in") ? { ...u, email: u.email.replace("@nexora.in", "@nnc.in") } : u));
       applyWorkspace(db.settings.workspace);
       return db;
     }

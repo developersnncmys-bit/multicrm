@@ -39,13 +39,13 @@ export function buildSeed(industryKey = "general") {
   const today = todayISO();
 
   const users = [
-    { id: "u1", name: "Admin User", email: "admin@nexora.in", password: "admin123", role: "Admin", branch: "Bangalore", phone: "98450 12345", active: true },
-    { id: "u2", name: "Kiran Kumar", email: "kiran@nexora.in", password: "demo123", role: "Sales Manager", branch: "Bangalore", phone: "98860 22110", active: true },
-    { id: "u3", name: "Divya Shetty", email: "divya@nexora.in", password: "demo123", role: "Sales Executive", branch: "Mysore", phone: "99001 33445", active: true },
-    { id: "u4", name: "Arun Prakash", email: "arun@nexora.in", password: "demo123", role: "Sales Executive", branch: "Mumbai", phone: "97400 55667", active: true },
-    { id: "u5", name: "Sowmya Rao", email: "sowmya@nexora.in", password: "demo123", role: "Accountant", branch: "Bangalore", phone: "96111 77889", active: true },
-    { id: "u6", name: "Rakesh Gowda", email: "rakesh@nexora.in", password: "demo123", role: "Project Manager", branch: "Bangalore", phone: "95380 99001", active: true },
-    { id: "u7", name: "Meena Iyer", email: "meena@nexora.in", password: "demo123", role: "Support Agent", branch: "Bangalore", phone: "94480 11223", active: true },
+    { id: "u1", name: "Admin User", email: "admin@nnc.in", password: "admin123", role: "Admin", branch: "Bangalore", phone: "98450 12345", active: true },
+    { id: "u2", name: "Kiran Kumar", email: "kiran@nnc.in", password: "demo123", role: "Sales Manager", branch: "Bangalore", phone: "98860 22110", active: true },
+    { id: "u3", name: "Divya Shetty", email: "divya@nnc.in", password: "demo123", role: "Sales Executive", branch: "Mysore", phone: "99001 33445", active: true },
+    { id: "u4", name: "Arun Prakash", email: "arun@nnc.in", password: "demo123", role: "Sales Executive", branch: "Mumbai", phone: "97400 55667", active: true },
+    { id: "u5", name: "Sowmya Rao", email: "sowmya@nnc.in", password: "demo123", role: "Accountant", branch: "Bangalore", phone: "96111 77889", active: true },
+    { id: "u6", name: "Rakesh Gowda", email: "rakesh@nnc.in", password: "demo123", role: "Project Manager", branch: "Bangalore", phone: "95380 99001", active: true },
+    { id: "u7", name: "Meena Iyer", email: "meena@nnc.in", password: "demo123", role: "Support Agent", branch: "Bangalore", phone: "94480 11223", active: true },
   ];
   const salesIds = ["u2", "u3", "u4", "u1"];
 
