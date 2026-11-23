@@ -10,11 +10,11 @@ export const INDUSTRIES = {
   general: {
     label: "Professional Services", short: "Services", icon: "Briefcase",
     desc: "Consultants, CA / legal firms, training, event and service businesses.",
-    services: ["Consultation", "Annual Retainer", "Audit & Compliance", "Training Program", "Implementation", "Support Plan", "Custom Engagement"],
+    services: ["Consultation", "Annual Retainer", "Audit & Compliance", "Training Program", "Implementation", "Support Plan", "Custom Project"],
     sources: ["Website", "Google Ads", "Meta Ads", "Referral", "WhatsApp", "Phone Call", "Walk-In", "LinkedIn", "JustDial", "Event"],
     stages: ["Onboarded", "Discovery", "Planning", "In Progress", "Review", "Delivered", "Completed", "On Hold"],
     milestones: ["Kick-off", "Discovery call", "Scope sign-off", "Execution", "Client review", "Delivery"],
-    terms: { project: "Engagement", projects: "Engagements", client: "Client", product: "Service" },
+    terms: { project: "Project", projects: "Projects", client: "Client", product: "Service" },
     notes: ["Needs a proposal by Friday.", "Decision maker is the MD.", "Comparing with 2 other firms.", "Wants monthly reporting.", "Referred by an existing client.", "Requested a call back after 5 PM.", "Budget approved for this quarter.", "Wants a site visit before signing."],
     modules: ["leads", "contacts", "calendar", "todays-plan", "quotations", "products", "projects", "tickets", "invoices", "payments", "expenses", "reports", "team", "campaigns", "automations", "apps", "audit", "owner", "analytics", "vault", "monthly-billing"],
   },
@@ -102,7 +102,7 @@ export const MODULE_CATALOG = [
 
   { key: "reports", label: "Reports, P&L & GST", group: "Insights", tier: "Growth", desc: "P&L, funnel, leaderboard, GST summary." },
   { key: "analytics", label: "Business Intelligence", group: "Insights", tier: "Enterprise", desc: "Trends, forecasts and cohort views." },
-  { key: "owner", label: "Owner View & Desk", group: "Insights", tier: "Enterprise", desc: "One-screen business health for the owner." },
+  { key: "owner", label: "Owner Dashboard", group: "Insights", tier: "Enterprise", desc: "One-screen business health for the owner." },
 
   { key: "team", label: "Attendance & Payroll", group: "Team", tier: "Growth", desc: "Attendance, salary and payslips." },
   { key: "employee-portal", label: "Employee Portal & Chat", group: "Team", tier: "Enterprise", desc: "Staff work logs, day plans, team chat." },

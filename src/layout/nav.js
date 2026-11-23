@@ -11,8 +11,7 @@ import { term } from "../config/workspace";
 export const NAV = [
   { section: "Overview", items: [
     { label: "Dashboard", path: "/", icon: LayoutDashboard, module: "dashboard" },
-    { label: "Owner View", path: "/owner", icon: Crown, module: "owner" },
-    { label: "Owner's Desk", path: "/owner-desk", icon: ClipboardList, module: "owner" },
+    { label: "Owner Dashboard", path: "/owner", icon: Crown, module: "owner" },
     { label: "Today's Plan", path: "/todays-plan", icon: ClipboardList, module: "todays-plan" },
     { label: "Calendar", path: "/calendar", icon: CalendarDays, module: "calendar" },
   ]},

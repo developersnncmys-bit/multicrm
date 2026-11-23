@@ -60,7 +60,7 @@ export const CRED_CATEGORIES = ["Hosting", "Domain", "Email", "Social Media", "G
 
 // Role-based access — each module key maps to a sidebar item
 export const MODULES = [
-  { key: "dashboard", label: "Dashboard", group: "Overview" }, { key: "owner", label: "Owner View & Owner's Desk", group: "Overview" },
+  { key: "dashboard", label: "Dashboard", group: "Overview" }, { key: "owner", label: "Owner Dashboard", group: "Overview" },
   { key: "calendar", label: "Calendar & Tasks", group: "Overview" }, { key: "todays-plan", label: "Today's Plan", group: "Overview" },
   { key: "leads", label: "Leads, Enquiries & Pipeline", group: "Sales" }, { key: "sales-desk", label: "Sales Desk", group: "Sales" },
   { key: "quotations", label: "Quotations", group: "Sales" }, { key: "contacts", label: "Contacts & Companies", group: "Sales" },

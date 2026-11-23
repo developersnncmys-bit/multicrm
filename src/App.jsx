@@ -19,8 +19,7 @@ import Team from "./pages/Team";
 import Vault from "./pages/Vault";
 import UsersPage from "./pages/Users";
 import Settings from "./pages/Settings";
-import OwnerView from "./pages/owner/OwnerView";
-import OwnerDesk from "./pages/owner/OwnerDesk";
+import OwnerHub from "./pages/owner/OwnerHub";
 import Analytics from "./pages/owner/Analytics";
 import TodaysPlan from "./pages/sales/TodaysPlan";
 import Enquiries from "./pages/sales/Enquiries";
@@ -64,7 +63,7 @@ const ROUTES = [
   ["/quotations", "quotations", Quotations], ["/invoices", "invoices", Invoices], ["/projects", "projects", Projects], ["/payments", "payments", Payments],
   ["/expenses", "expenses", Expenses], ["/reports", "reports", Reports], ["/team", "team", Team], ["/vault", "vault", Vault],
   ["/users", "users", UsersPage], ["/settings", "settings", Settings],
-  ["/owner", "owner", OwnerView], ["/owner-desk", "owner", OwnerDesk], ["/analytics", "analytics", Analytics], ["/todays-plan", "todays-plan", TodaysPlan],
+  ["/owner", "owner", OwnerHub], ["/analytics", "analytics", Analytics], ["/todays-plan", "todays-plan", TodaysPlan],
   ["/enquiries", "leads", Enquiries], ["/sales-desk", "sales-desk", SalesDesk], ["/monthly-billing", "monthly-billing", MonthlyBilling],
   ["/integrations", "integrations", Integrations], ["/documents", "projects", Documents], ["/employee-portal", "employee-portal", EmployeePortal],
   ["/seo-team", "seo-team", SeoTeam], ["/funds", "funds", Funds],
@@ -78,6 +77,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
         {ROUTES.map(([path, module, C]) => <Route key={path} path={path} element={<Guard module={module}><C /></Guard>} />)}
+        <Route path="/owner-desk" element={<Navigate to="/owner" replace />} />
         <Route path="*" element={<EmptyState title="Page not found" text="The page you're looking for doesn't exist." />} />
       </Route>
     </Routes>

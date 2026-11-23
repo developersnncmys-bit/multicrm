@@ -151,8 +151,7 @@ export default function OwnerDesk() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-slate-900 dark:text-white">{greet}, {user.name.split(" ")[0]}</h1>
-          <p className={cx("mt-1 text-sm", criticalLeft ? "font-medium text-rose-600" : "text-slate-500")}>
+          <p className={cx("text-sm", criticalLeft ? "font-medium text-rose-600" : "text-slate-500")}>
             {criticalLeft ? `${criticalLeft} critical task${criticalLeft === 1 ? "" : "s"} need you today` : "No critical tasks — great day to grow the pipeline"}
           </p>
         </div>

@@ -33,7 +33,7 @@ To get back the original demo data, use **Settings → Data & Backup → Reset d
 
 Log in as Admin. A **"Set up this workspace"** banner opens a 4-step wizard:
 
-1. **Business type.** This sets the words used (Projects → Bookings / Admissions / Treatments / Orders / Engagements), the 8 delivery stages, milestones, services and lead sources.
+1. **Business type.** This sets the words used (Projects → Bookings / Admissions / Treatments / Orders), the 8 delivery stages, milestones, services and lead sources.
 2. **Company.** Name, contact details, GSTIN and brand colour.
 3. **Plan & modules.** Starter, Growth or Enterprise switches on a set of modules. You can then switch each module on or off individually.
 4. **Finish.** Optionally load sample data for that industry, which is useful for demos.
@@ -42,7 +42,7 @@ Everything can be changed later in **Settings → Workspace & Modules**, includi
 
 | Industry | What gets tracked | Delivery stages |
 |---|---|---|
-| Professional Services | Engagements | Onboarded → Discovery → Planning → In Progress → Review → Delivered |
+| Professional Services | Projects | Onboarded → Discovery → Planning → In Progress → Review → Delivered |
 | Digital / IT Agency | Projects | Onboarded → Requirement Gathering → Design → Development → Testing → Live |
 | Real Estate & Builders | Bookings | Site Visit Scheduled → Site Visit Done → Unit Blocked → Booking → Agreement → Registration |
 | Education & Coaching | Admissions | Counselling → Demo Class → Application → Documents → Fee Paid → Enrolled |

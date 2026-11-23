@@ -217,10 +217,7 @@ export default function OwnerView() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <h1 className="text-[22px] font-bold tracking-tight text-slate-900 dark:text-white">{greet}, {user.name.split(" ")[0]}</h1>
-          <p className="mt-1 text-sm text-slate-500">Owner view — money, delivery and data health for {new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</p>
-        </div>
+        <p className="text-sm text-slate-500">How the business is doing in {new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })} — cash, collections, delivery, branches and data quality.</p>
         <div className="flex flex-wrap items-center gap-2">
           <Tabs value={show} onChange={setShow} tabs={[{ value: "all", label: "Everything" }, { value: "money", label: "Money" }, { value: "delivery", label: "Delivery" }]} />
           <Select value={owner} onChange={(e) => setOwner(e.target.value)} options={salesUsers.map((u) => ({ value: u.id, label: u.name }))} placeholder="All owners" className="w-40" />
@@ -272,22 +269,6 @@ export default function OwnerView() {
                   </Link>
                 </div>
               </div>
-            </div>
-          </Section>
-
-          {/* Only you can do these today */}
-          <Section icon={ShieldCheck} title="Only you can do these today" subtitle="Decisions and calls that need the owner">
-            <div className="grid gap-px bg-slate-100 dark:bg-slate-800 sm:grid-cols-2 xl:grid-cols-3">
-              {todayItems.map((t) => (
-                <div key={t.title} className="flex items-center gap-3 bg-white p-4 dark:bg-slate-900">
-                  <span className={cx("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", t.rows.length ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10" : "bg-slate-100 text-slate-400 dark:bg-slate-800")}><t.icon className="h-4 w-4" /></span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-700 dark:text-slate-200">{t.title}</p>
-                    <p className="text-xs text-slate-500"><b className="text-slate-900 dark:text-white">{t.rows.length}</b>{t.amount ? ` · ${inr(t.amount)}` : ""}</p>
-                  </div>
-                  <Button size="sm" variant="soft" disabled={!t.rows.length} onClick={t.action}>{t.cta}</Button>
-                </div>
-              ))}
             </div>
           </Section>
 
