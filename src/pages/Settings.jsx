@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Building2, Landmark, FileText, Target, Palette, Database, Upload, Download, RotateCcw, Check, Sun, Moon, ImagePlus, Save, Sparkles, LayoutGrid } from "lucide-react";
+import { Building2, Landmark, FileText, Target, Palette, Database, Upload, Download, RotateCcw, Check, Sun, Moon, ImagePlus, Save, Sparkles, LayoutGrid, Trash2 } from "lucide-react";
 import WorkspaceSettings from "./workspace/WorkspaceSettings";
 import { INDUSTRIES } from "../config/workspace";
 import { useStore } from "../store/store";
@@ -203,10 +203,19 @@ function DataBackup() {
           <Button variant="secondary" icon={Upload} onClick={() => fileRef.current?.click()}>Choose file</Button>
         </div>
         <div className="flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50/50 p-4 dark:border-rose-500/30 dark:bg-rose-500/5 sm:flex-row sm:items-center">
-          <div className="flex-1"><p className="font-semibold text-rose-700 dark:text-rose-300">Reset demo data</p><p className="text-sm text-slate-500">Restore the original sample data. All your changes will be lost.</p></div>
+          <div className="flex-1"><p className="font-semibold text-rose-700 dark:text-rose-300">Reset demo data</p><p className="text-sm text-slate-500">Reload fresh sample records. Your business type, modules and company profile are kept.</p></div>
           <Button variant="danger" icon={RotateCcw} onClick={async () => {
             if (await confirm({ title: "Reset all data?", message: "Every lead, quotation, invoice and setting will be replaced with fresh sample data.", confirmText: "Reset data" })) { resetDemo(db.settings.workspace?.industry, db.settings.workspace); toast("Demo data restored"); }
           }}>Reset</Button>
+        </div>
+        <div className="flex flex-col gap-3 rounded-2xl border border-rose-300 bg-rose-50 p-4 dark:border-rose-500/40 dark:bg-rose-500/10 sm:flex-row sm:items-center">
+          <div className="flex-1"><p className="font-semibold text-rose-700 dark:text-rose-300">Delete workspace & start fresh</p><p className="text-sm text-slate-500">Removes “{db.settings.company.name}”, its business type, modules and all records. The setup wizard starts again.</p></div>
+          <Button variant="danger" icon={Trash2} onClick={async () => {
+            if (await confirm({ title: `Delete “${db.settings.company.name}”?`, message: "The workspace setup, company profile and every record in this browser will be deleted. This cannot be undone.", confirmText: "Delete workspace" })) {
+              try { sessionStorage.removeItem("nexora_setup_hide"); } catch { /* ignore */ }
+              resetDemo("general"); toast("Workspace deleted — run the setup wizard to create a new one");
+            }
+          }}>Delete</Button>
         </div>
       </div>
     </Section>
