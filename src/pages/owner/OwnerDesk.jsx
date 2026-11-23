@@ -49,6 +49,10 @@ export default function OwnerDesk() {
   const doneKey = `nexora_desk_done_${today}`;
   const [done, setDone] = useState(() => ls.get(doneKey, {}));
   const [showDone, setShowDone] = useState(false);
+  const [typeF, setTypeF] = useState("");
+  const [priF, setPriF] = useState("");
+  const [qF, setQF] = useState("");
+  const [expanded, setExpanded] = useState({});
   const [note, setNote] = useState("");
   const [cmForm, setCmForm] = useState(null);
   const [streak, setStreak] = useState(1);
@@ -115,7 +119,10 @@ export default function OwnerDesk() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, today]);
 
-  const visible = data.items.filter((i) => showDone || !done[i.id]);
+  const open = data.items.filter((i) => showDone || !done[i.id]);
+  const typeCounts = open.reduce((m, i) => { m[i.type] = (m[i.type] || 0) + 1; return m; }, {});
+  const visible = open.filter((i) => (!typeF || i.type === typeF) && (!priF || i.priority === priF) && (!qF || `${i.title} ${i.sub}`.toLowerCase().includes(qF.toLowerCase())));
+  const filtered = typeF || priF || qF;
   const doneCount = data.items.filter((i) => done[i.id]).length;
   const criticalLeft = data.items.filter((i) => i.priority === "Critical" && !done[i.id]).length;
   const hour = new Date().getHours();
@@ -205,15 +212,29 @@ export default function OwnerDesk() {
               <Button size="sm" variant="ghost" onClick={() => setShowDone((v) => !v)}>{showDone ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}{showDone ? "Hide done" : "Show done"}</Button>
             </div>
           </div>
-          {visible.length === 0 ? <EmptyState icon={CheckCircle2} title="All done for today 🎉" text="Every assignment is ticked off." /> : (
-            <div className="p-3">
+          <div className="space-y-3 border-b border-slate-100 px-5 py-3 dark:border-slate-800">
+            <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+              {[["", "All", open.length], ...Object.keys(TYPE_ICON).filter((t) => typeCounts[t]).map((t) => [t, t, typeCounts[t]])].map(([v, l, c]) => (
+                <button key={l} onClick={() => setTypeF(v)} className={cx("inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition", typeF === v ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-200" : "border-slate-200 text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:text-slate-300")}>
+                  {l}<span className={cx("rounded-full px-1.5 text-[10px]", typeF === v ? "bg-brand-100 dark:bg-brand-500/20" : "bg-slate-100 dark:bg-slate-800")}>{c}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="relative flex-1"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={qF} onChange={(e) => setQF(e.target.value)} placeholder="Search client or task…" className="input !h-9 pl-9" /></div>
+              <select value={priF} onChange={(e) => setPriF(e.target.value)} className="input !h-9 sm:!w-40"><option value="">All priorities</option>{PRI.map((p) => <option key={p} value={p}>{p}</option>)}</select>
+              {filtered && <Button size="sm" variant="ghost" onClick={() => { setTypeF(""); setPriF(""); setQF(""); }}>Clear</Button>}
+            </div>
+          </div>
+          {visible.length === 0 ? <EmptyState icon={CheckCircle2} title={filtered ? "Nothing matches these filters" : "All done for today 🎉"} text={filtered ? "Try another type or priority." : "Every assignment is ticked off."} /> : (
+            <div className="max-h-[640px] overflow-y-auto p-3">
               {PRI.map((p) => {
                 const rows = visible.filter((i) => i.priority === p);
                 if (!rows.length) return null;
                 return (
                   <div key={p} className="mb-3">
                     <p className="flex items-center gap-2 px-2 py-2 text-xs font-bold uppercase tracking-wider text-slate-500"><span className={cx("h-2 w-2 rounded-full", PRI_STYLE[p].dot)} />{p}<span className="font-medium normal-case tracking-normal text-slate-400">· {rows.length}</span></p>
-                    {rows.map((it) => {
+                    {rows.slice(0, expanded[p] || filtered ? rows.length : 5).map((it) => {
                       const Icon = TYPE_ICON[it.type];
                       const isDone = !!done[it.id];
                       return (
@@ -229,6 +250,11 @@ export default function OwnerDesk() {
                         </div>
                       );
                     })}
+                    {!filtered && rows.length > 5 && (
+                      <button onClick={() => setExpanded((e) => ({ ...e, [p]: !e[p] }))} className="ml-2 mt-1 text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300">
+                        {expanded[p] ? "Show less" : `Show ${rows.length - 5} more ${p.toLowerCase()}`}
+                      </button>
+                    )}
                   </div>
                 );
               })}

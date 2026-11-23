@@ -138,6 +138,7 @@ export const PLANS = [
   { key: "Growth", price: "₹1,999", per: "/user/mo", desc: "Adds delivery, support, campaigns, payroll & reports." },
   { key: "Enterprise", price: "Custom", per: "", desc: "Automations, BI, owner desk, audit and add-ons." },
 ];
+const STANDARD_MODULES = new Set(MODULE_CATALOG.filter((m) => !m.addon).map((m) => m.key));
 const TIER_RANK = { Starter: 1, Growth: 2, Enterprise: 3, "Add-on": 4 };
 export const modulesForPlan = (plan, industry) => MODULE_CATALOG.filter((m) => !m.core && (m.addon ? m.addon === industry && plan === "Enterprise" : TIER_RANK[m.tier] <= TIER_RANK[plan])).map((m) => m.key);
 // "documents" lives under the projects module key
@@ -173,7 +174,8 @@ export function applyWorkspace(ws) {
   replace(PROJECT_STAGES, preset.stages);
   Object.keys(PROJECT_STAGE_STYLE).forEach((k) => delete PROJECT_STAGE_STYLE[k]);
   preset.stages.forEach((s, i) => { PROJECT_STAGE_STYLE[s] = STAGE_PALETTE[i]; });
-  active = { key: w.industry, preset, enabled: Array.isArray(w.enabled) ? new Set(w.enabled) : null, sig };
+  // Module switching UI was removed: every standard module is on; industry add-ons stay off
+  active = { key: w.industry, preset, enabled: STANDARD_MODULES, sig };
 }
 
 export const industry = () => active.preset;

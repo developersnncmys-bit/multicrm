@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
-import { Building2, Landmark, FileText, Target, Palette, Database, Upload, Download, RotateCcw, Check, Sun, Moon, ImagePlus, Save, Sparkles, LayoutGrid, Trash2 } from "lucide-react";
-import WorkspaceSettings from "./workspace/WorkspaceSettings";
-import { INDUSTRIES } from "../config/workspace";
+import { Building2, Landmark, FileText, Target, Palette, Database, Upload, Download, RotateCcw, Check, Sun, Moon, ImagePlus, Save, Sparkles, Trash2 } from "lucide-react";
 import { useStore } from "../store/store";
 import { useToast } from "../components/ui/Toast";
 import { Button, Card, PageHeader, Field, Input, Textarea, useConfirm, cx } from "../components/ui";
@@ -10,7 +8,6 @@ import { inr } from "../utils/format";
 
 const VERSION = "v2.0.0";
 const SECTIONS = [
-  { key: "workspace", label: "Workspace & Modules", icon: LayoutGrid, desc: "Industry, plan and which modules are on" },
   { key: "company", label: "Company Profile", icon: Building2, desc: "Shown on quotations, invoices and payslips" },
   { key: "bank", label: "Bank & Payments", icon: Landmark, desc: "Printed on invoices for client payments" },
   { key: "docs", label: "Quotes & Invoices", icon: FileText, desc: "Numbering, tax defaults and terms" },
@@ -209,11 +206,11 @@ function DataBackup() {
           }}>Reset</Button>
         </div>
         <div className="flex flex-col gap-3 rounded-2xl border border-rose-300 bg-rose-50 p-4 dark:border-rose-500/40 dark:bg-rose-500/10 sm:flex-row sm:items-center">
-          <div className="flex-1"><p className="font-semibold text-rose-700 dark:text-rose-300">Delete workspace & start fresh</p><p className="text-sm text-slate-500">Removes “{db.settings.company.name}”, its business type, modules and all records. The setup wizard starts again.</p></div>
+          <div className="flex-1"><p className="font-semibold text-rose-700 dark:text-rose-300">Delete workspace & start fresh</p><p className="text-sm text-slate-500">Removes “{db.settings.company.name}”, its company profile and all records, and starts with fresh sample data.</p></div>
           <Button variant="danger" icon={Trash2} onClick={async () => {
             if (await confirm({ title: `Delete “${db.settings.company.name}”?`, message: "The workspace setup, company profile and every record in this browser will be deleted. This cannot be undone.", confirmText: "Delete workspace" })) {
               try { sessionStorage.removeItem("nexora_setup_hide"); } catch { /* ignore */ }
-              resetDemo("general"); toast("Workspace deleted — run the setup wizard to create a new one");
+              resetDemo("general"); toast("Workspace deleted — fresh start");
             }
           }}>Delete</Button>
         </div>
@@ -223,9 +220,9 @@ function DataBackup() {
 }
 
 export default function Settings() {
-  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get("tab") || "workspace");
+  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get("tab") || "company");
   const { db } = useStore();
-  const Comp = { workspace: WorkspaceSettings, company: Company, bank: Bank, docs: Docs, targets: Targets, appearance: Appearance, data: DataBackup }[active];
+  const Comp = { company: Company, bank: Bank, docs: Docs, targets: Targets, appearance: Appearance, data: DataBackup }[active];
   return (
     <div>
       <PageHeader title="Settings" subtitle="Manage your company profile, documents and preferences." />
@@ -249,7 +246,6 @@ export default function Settings() {
             <div className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-brand-500" /><p className="text-sm font-bold text-slate-900 dark:text-white">{BRAND.productName}</p><span className="ml-auto rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800">{VERSION}</span></div>
             <p className="mt-1 text-xs text-slate-500">{BRAND.tagline}</p>
             <p className="mt-2 text-xs text-slate-400">Licensed to {db.settings.company.name}</p>
-            <p className="mt-0.5 text-xs text-slate-400">{INDUSTRIES[db.settings.workspace?.industry]?.label} · {db.settings.workspace?.plan} plan</p>
           </Card>
         </div>
         {/* key resets the draft when switching sections */}

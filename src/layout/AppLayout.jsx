@@ -6,7 +6,6 @@ import { ROLES } from "../config/constants";
 import { BRAND } from "../config/brand";
 import { isModuleOn } from "../config/workspace";
 import { NAV, navLabel } from "./nav";
-import SetupWizard, { SetupBanner } from "../pages/workspace/SetupWizard";
 import TeamChat from "../components/TeamChat";
 
 // Active when pathname matches and (for ?tab= links) the tab matches too
@@ -318,12 +317,10 @@ export default function AppLayout() {
       <div className={cx("transition-all duration-300", collapsed ? "lg:pl-[76px]" : "lg:pl-64")}>
         <Topbar onMenu={() => setMobileOpen(true)} onSearch={() => setPalette(true)} />
         <main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-          <SetupBanner />
           <Outlet />
         </main>
       </div>
       <CommandPalette open={palette} onClose={() => setPalette(false)} />
-      <SetupWizard />
       {canAccess(user, "employee-portal") && <TeamChat />}
     </div>
   );

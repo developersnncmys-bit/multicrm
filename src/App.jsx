@@ -42,8 +42,8 @@ function Guard({ module, children }) {
   const { user } = useStore();
   if (!isModuleOn(module)) {
     const m = MODULE_CATALOG.find((x) => x.key === module);
-    return <EmptyState icon={PowerOff} title={`${m?.label || "This module"} is switched off`} text="This workspace doesn't use this module. An admin can turn it on in Settings → Workspace & Modules."
-      action={user.role === "Admin" ? <Button onClick={() => { window.location.href = "/settings?tab=workspace"; }}>Manage modules</Button> : <Button onClick={() => history.back()} variant="secondary">Go back</Button>} />;
+    return <EmptyState icon={PowerOff} title={`${m?.label || "This module"} is switched off`} text="This is an industry add-on that isn't included in your workspace."
+      action={<Button onClick={() => history.back()} variant="secondary">Go back</Button>} />;
   }
   if (!canAccess(user, module)) {
     return <EmptyState icon={ShieldOff} title="You don't have access to this page" text={`Your role (${user.role}) can't open this module. Ask an admin to update your permissions.`} action={<Button onClick={() => history.back()} variant="secondary">Go back</Button>} />;

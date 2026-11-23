@@ -29,16 +29,11 @@ Credential Vault demo PIN: **1234**
 
 To get back the original demo data, use **Settings → Data & Backup → Reset demo data**.
 
-## Setting it up for a new client
+## Industry presets
 
-Log in as Admin. A **"Set up this workspace"** banner opens a 4-step wizard:
+The setup wizard and the Settings → Workspace & Modules screen were removed. All standard modules are always on. The agency add-ons (SEO & Ads Delivery and Client Project Vault) are off.
 
-1. **Business type.** This sets the words used (Projects → Bookings / Admissions / Treatments / Orders), the 8 delivery stages, milestones, services and lead sources.
-2. **Company.** Name, contact details, GSTIN and brand colour.
-3. **Plan & modules.** Starter, Growth or Enterprise switches on a set of modules. You can then switch each module on or off individually.
-4. **Finish.** Optionally load sample data for that industry, which is useful for demos.
-
-Everything can be changed later in **Settings → Workspace & Modules**, including the client's own list of services and lead sources. A module that is switched off disappears from the menu, search, quick-create and dashboard for every user, and its URL shows a "switched off" screen.
+The business type defaults to **Professional Services**. To ship a build for another industry, change the default in `defaultWorkspace()` in `src/config/workspace.js`.
 
 | Industry | What gets tracked | Delivery stages |
 |---|---|---|
