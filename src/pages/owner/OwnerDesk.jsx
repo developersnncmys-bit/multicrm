@@ -53,6 +53,8 @@ export default function OwnerDesk() {
   const [priF, setPriF] = useState("");
   const [qF, setQF] = useState("");
   const [expanded, setExpanded] = useState({});
+  const [allCm, setAllCm] = useState(false);
+  const [allNotes, setAllNotes] = useState(false);
   const [note, setNote] = useState("");
   const [cmForm, setCmForm] = useState(null);
   const [streak, setStreak] = useState(1);
@@ -169,7 +171,7 @@ export default function OwnerDesk() {
       </div>
 
       {/* Health + money strip */}
-      <div className="grid gap-6 xl:grid-cols-[1.1fr_2fr]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
         <Card className="flex flex-col items-center gap-5 p-5 sm:flex-row">
           <HealthRing score={data.score} />
           <div className="w-full flex-1 space-y-3">
@@ -199,9 +201,9 @@ export default function OwnerDesk() {
         </Card>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
         {/* Assignments */}
-        <Card>
+        <Card className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
             <div>
               <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">Today's assignments</h3>
@@ -213,7 +215,7 @@ export default function OwnerDesk() {
             </div>
           </div>
           <div className="space-y-3 border-b border-slate-100 px-5 py-3 dark:border-slate-800">
-            <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+            <div className="flex flex-wrap gap-1.5">
               {[["", "All", open.length], ...Object.keys(TYPE_ICON).filter((t) => typeCounts[t]).map((t) => [t, t, typeCounts[t]])].map(([v, l, c]) => (
                 <button key={l} onClick={() => setTypeF(v)} className={cx("inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition", typeF === v ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-200" : "border-slate-200 text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:text-slate-300")}>
                   {l}<span className={cx("rounded-full px-1.5 text-[10px]", typeF === v ? "bg-brand-100 dark:bg-brand-500/20" : "bg-slate-100 dark:bg-slate-800")}>{c}</span>
@@ -227,26 +229,29 @@ export default function OwnerDesk() {
             </div>
           </div>
           {visible.length === 0 ? <EmptyState icon={CheckCircle2} title={filtered ? "Nothing matches these filters" : "All done for today 🎉"} text={filtered ? "Try another type or priority." : "Every assignment is ticked off."} /> : (
-            <div className="max-h-[640px] overflow-y-auto p-3">
+            <div className="p-3">
               {PRI.map((p) => {
                 const rows = visible.filter((i) => i.priority === p);
                 if (!rows.length) return null;
                 return (
                   <div key={p} className="mb-3">
-                    <p className="flex items-center gap-2 px-2 py-2 text-xs font-bold uppercase tracking-wider text-slate-500"><span className={cx("h-2 w-2 rounded-full", PRI_STYLE[p].dot)} />{p}<span className="font-medium normal-case tracking-normal text-slate-400">· {rows.length}</span></p>
+                    <p className="mb-1 flex items-center gap-2 border-b border-slate-100 px-2 pb-2 pt-1 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800"><span className={cx("h-2 w-2 rounded-full", PRI_STYLE[p].dot)} />{p}<span className="font-medium normal-case tracking-normal text-slate-400">· {rows.length}</span></p>
                     {rows.slice(0, expanded[p] || filtered ? rows.length : 5).map((it) => {
                       const Icon = TYPE_ICON[it.type];
                       const isDone = !!done[it.id];
                       return (
-                        <div key={it.id} className={cx("group flex items-center gap-3 rounded-lg px-2 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40", isDone && "opacity-50")}>
+                        <div key={it.id} className={cx("group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/40", isDone && "opacity-50")}>
                           <button onClick={() => setDone((d) => ({ ...d, [it.id]: !d[it.id] }))} className={cx("flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition", isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-emerald-500 dark:border-slate-600")}><Check className="h-3 w-3" strokeWidth={3} /></button>
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800"><Icon className="h-4 w-4" /></span>
+                          <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 sm:flex"><Icon className="h-4 w-4" /></span>
                           <div className="min-w-0 flex-1">
                             <p className={cx("truncate text-sm font-medium text-slate-800 dark:text-slate-100", isDone && "line-through")}>{it.title}</p>
                             <p className="truncate text-xs text-slate-500"><span className={cx("mr-1.5 rounded px-1.5 py-px text-[10px] font-semibold", PRI_STYLE[p].chip)}>{it.type}</span>{it.sub}</p>
                           </div>
+                          {it.amount > 0 && it.type === "Collect Payment" && <span className="hidden shrink-0 text-sm font-bold text-slate-800 dark:text-slate-100 md:block">{compactInr(it.amount)}</span>}
+                          <div className="flex shrink-0 items-center opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
                           {it.phone && <a href={telLink(it.phone)} className="rounded-lg p-2 text-slate-400 hover:bg-white hover:text-emerald-600 dark:hover:bg-slate-800" title="Call"><Phone className="h-4 w-4" /></a>}
                           <button onClick={() => nav(it.to)} className="rounded-lg p-2 text-slate-400 hover:bg-white hover:text-brand-600 dark:hover:bg-slate-800" title="Open"><ArrowUpRight className="h-4 w-4" /></button>
+                          </div>
                         </div>
                       );
                     })}
@@ -262,7 +267,7 @@ export default function OwnerDesk() {
           )}
         </Card>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           {/* Payment commitments */}
           <Card>
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
@@ -272,9 +277,9 @@ export default function OwnerDesk() {
               </div>
               <Button size="sm" icon={Plus} onClick={() => setCmForm({ q: "", ref: null, label: "", amount: "", expectedDate: addDays(today, 3) })}>Add</Button>
             </div>
-            <div className="max-h-[380px] space-y-1 overflow-y-auto p-3">
+            <div className="space-y-1 p-3">
               {commitments.length === 0 && <EmptyState icon={HandCoins} title="No commitments yet" text="Log promises like “₹50k on Friday” to track them." />}
-              {commitments.map((c) => {
+              {commitments.slice(0, allCm ? commitments.length : 5).map((c) => {
                 const late = !c.collected && c.expectedDate < today;
                 const isToday = !c.collected && c.expectedDate === today;
                 return (
@@ -291,6 +296,7 @@ export default function OwnerDesk() {
                   </div>
                 );
               })}
+              {commitments.length > 5 && <button onClick={() => setAllCm((v) => !v)} className="px-2 pt-1 text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300">{allCm ? "Show less" : `Show all ${commitments.length}`}</button>}
             </div>
           </Card>
 
@@ -300,11 +306,12 @@ export default function OwnerDesk() {
               <h3 className="flex items-center gap-2 text-[15px] font-semibold text-slate-900 dark:text-white"><StickyNote className="h-4 w-4 text-amber-500" />Daily notes</h3>
             </div>
             <div className="p-4">
-              <textarea value={note} onChange={(e) => setNote(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); addNote(); } }}
-                rows={2} placeholder="Write a note… (Ctrl + Enter to save)" className="input resize-none" />
-              <div className="mt-2 flex justify-end"><Button size="sm" onClick={addNote} disabled={!note.trim()}>Add note</Button></div>
-              <div className="mt-3 max-h-80 space-y-2 overflow-y-auto">
-                {notes.map((n) => (
+              <div className="flex gap-2">
+                <input value={note} onChange={(e) => setNote(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addNote(); } }} placeholder="Quick note… press Enter to save" className="input" />
+                <Button onClick={addNote} disabled={!note.trim()} icon={Plus}>Add</Button>
+              </div>
+              <div className="mt-3 space-y-2">
+                {notes.slice(0, allNotes ? notes.length : 3).map((n) => (
                   <div key={n.id} className={cx("group rounded-lg border px-3 py-2.5", n.pinned ? "border-amber-200 bg-amber-50/60 dark:border-amber-500/20 dark:bg-amber-500/5" : "border-slate-100 dark:border-slate-800")}>
                     <p className="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200">{n.text}</p>
                     <div className="mt-1.5 flex items-center justify-between">
@@ -317,6 +324,7 @@ export default function OwnerDesk() {
                   </div>
                 ))}
                 {notes.length === 0 && <p className="py-4 text-center text-sm text-slate-400">No notes yet</p>}
+                {notes.length > 3 && <button onClick={() => setAllNotes((v) => !v)} className="text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300">{allNotes ? "Show less" : `Show all ${notes.length} notes`}</button>}
               </div>
             </div>
           </Card>
