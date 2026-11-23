@@ -153,7 +153,7 @@ export function buildSeed(industryKey = "general") {
     const milestones = milestoneTitles().map((t, k) => ({ id: `m${k}`, title: t, done: k < Math.min(idx + 1, 6) && stage !== "On Hold" ? true : k < 2 }));
     return {
       id: `P${i + 1}`, name: `${l.company} — ${l.service}`, client: l.company, contact: l.name, phone: l.phone, leadId: l.id, service: l.service,
-      stage, startDate: start, deadline: addDays(start, int(30, 90)), value: l.value, managerId: "u6",
+      stage, startDate: start, deadline: stage === S[6] ? addDays(start, int(30, 60)) : i % 6 === 4 ? addDays(today, -int(2, 12)) : addDays(today, int(4, 55)), value: l.value, managerId: "u6",
       team: [pick(["e3", "e4", "e5"]), pick(["e6", "e7"])], branch: l.branch, milestones,
       notes: "Client prefers WhatsApp updates every Friday.",
     };
