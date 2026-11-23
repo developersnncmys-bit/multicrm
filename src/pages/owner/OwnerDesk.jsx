@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Flame, Phone, ArrowUpRight, Check, Wallet, CalendarClock, UserPlus, FileClock, Truck, RefreshCcw, Pin, PinOff, Trash2, Plus, StickyNote,
-  HandCoins, Eye, EyeOff, Search, AlertTriangle, CheckCircle2,
+  HandCoins, Search, AlertTriangle, CheckCircle2,
 } from "lucide-react";
 import { useStore } from "../../store/store";
 import { useToast } from "../../components/ui/Toast";
@@ -121,7 +121,8 @@ export default function OwnerDesk() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [db, today]);
 
-  const open = data.items.filter((i) => showDone || !done[i.id]);
+  // showDone=false → "To do" tab, true → "Completed" tab
+  const open = data.items.filter((i) => (showDone ? done[i.id] : !done[i.id]));
   const typeCounts = open.reduce((m, i) => { m[i.type] = (m[i.type] || 0) + 1; return m; }, {});
   const visible = open.filter((i) => (!typeF || i.type === typeF) && (!priF || i.priority === priF) && (!qF || `${i.title} ${i.sub}`.toLowerCase().includes(qF.toLowerCase())));
   const filtered = typeF || priF || qF;
@@ -206,12 +207,14 @@ export default function OwnerDesk() {
         <Card className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
             <div>
-              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">Today's assignments</h3>
-              <p className="text-xs text-slate-500">Auto-generated from payments, follow-ups, quotations and delivery · {doneCount}/{data.items.length} done</p>
+              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">Your to-do list for today</h3>
+              <p className="text-xs text-slate-500">Made automatically from unpaid bills, follow-ups, pending quotations and late work. Tick the box when a task is finished.</p>
+              <div className="mt-2 flex items-center gap-2"><div className="w-40"><Progress value={data.items.length ? (doneCount / data.items.length) * 100 : 0} tone="bg-emerald-500" /></div><span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{doneCount} of {data.items.length} finished</span></div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-32"><Progress value={data.items.length ? (doneCount / data.items.length) * 100 : 0} tone="bg-emerald-500" /></div>
-              <Button size="sm" variant="ghost" onClick={() => setShowDone((v) => !v)}>{showDone ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}{showDone ? "Hide done" : "Show done"}</Button>
+            <div className="flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
+              {[[false, `To do (${data.items.length - doneCount})`], [true, `Finished (${doneCount})`]].map(([v, l]) => (
+                <button key={l} onClick={() => setShowDone(v)} className={cx("rounded-md px-3 py-1.5 text-xs font-semibold transition", showDone === v ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white" : "text-slate-500 hover:text-slate-800")}>{l}</button>
+              ))}
             </div>
           </div>
           <div className="space-y-3 border-b border-slate-100 px-5 py-3 dark:border-slate-800">
@@ -228,29 +231,29 @@ export default function OwnerDesk() {
               {filtered && <Button size="sm" variant="ghost" onClick={() => { setTypeF(""); setPriF(""); setQF(""); }}>Clear</Button>}
             </div>
           </div>
-          {visible.length === 0 ? <EmptyState icon={CheckCircle2} title={filtered ? "Nothing matches these filters" : "All done for today 🎉"} text={filtered ? "Try another type or priority." : "Every assignment is ticked off."} /> : (
+          {visible.length === 0 ? <EmptyState icon={CheckCircle2} title={filtered ? "Nothing matches these filters" : showDone ? "Nothing finished yet" : "All done for today 🎉"} text={filtered ? "Try another type or priority." : showDone ? "Tick a task in the To do tab and it moves here." : "Every task is ticked off."} /> : (
             <div className="p-3">
               {PRI.map((p) => {
                 const rows = visible.filter((i) => i.priority === p);
                 if (!rows.length) return null;
                 return (
                   <div key={p} className="mb-3">
-                    <p className="mb-1 flex items-center gap-2 border-b border-slate-100 px-2 pb-2 pt-1 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800"><span className={cx("h-2 w-2 rounded-full", PRI_STYLE[p].dot)} />{p}<span className="font-medium normal-case tracking-normal text-slate-400">· {rows.length}</span></p>
+                    <p className="mb-1 flex items-center gap-2 border-b border-slate-100 px-2 pb-2 pt-1 text-xs font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800"><span className={cx("h-2 w-2 rounded-full", PRI_STYLE[p].dot)} />{p}<span className="font-medium normal-case tracking-normal text-slate-400">· {rows.length} · {{ Critical: "do these first", High: "finish today", Medium: "if time permits", Low: "this week" }[p]}</span></p>
                     {rows.slice(0, expanded[p] || filtered ? rows.length : 5).map((it) => {
                       const Icon = TYPE_ICON[it.type];
                       const isDone = !!done[it.id];
                       return (
                         <div key={it.id} className={cx("group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/40", isDone && "opacity-50")}>
-                          <button onClick={() => setDone((d) => ({ ...d, [it.id]: !d[it.id] }))} className={cx("flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition", isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-emerald-500 dark:border-slate-600")}><Check className="h-3 w-3" strokeWidth={3} /></button>
+                          <button title={isDone ? "Mark as not finished" : "Mark as finished"} onClick={() => setDone((d) => ({ ...d, [it.id]: !d[it.id] }))} className={cx("flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition", isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-emerald-500 dark:border-slate-600")}><Check className="h-3 w-3" strokeWidth={3} /></button>
                           <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 sm:flex"><Icon className="h-4 w-4" /></span>
                           <div className="min-w-0 flex-1">
                             <p className={cx("truncate text-sm font-medium text-slate-800 dark:text-slate-100", isDone && "line-through")}>{it.title}</p>
                             <p className="truncate text-xs text-slate-500"><span className={cx("mr-1.5 rounded px-1.5 py-px text-[10px] font-semibold", PRI_STYLE[p].chip)}>{it.type}</span>{it.sub}</p>
                           </div>
                           {it.amount > 0 && it.type === "Collect Payment" && <span className="hidden shrink-0 text-sm font-bold text-slate-800 dark:text-slate-100 md:block">{compactInr(it.amount)}</span>}
-                          <div className="flex shrink-0 items-center opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
-                          {it.phone && <a href={telLink(it.phone)} className="rounded-lg p-2 text-slate-400 hover:bg-white hover:text-emerald-600 dark:hover:bg-slate-800" title="Call"><Phone className="h-4 w-4" /></a>}
-                          <button onClick={() => nav(it.to)} className="rounded-lg p-2 text-slate-400 hover:bg-white hover:text-brand-600 dark:hover:bg-slate-800" title="Open"><ArrowUpRight className="h-4 w-4" /></button>
+                          <div className="flex shrink-0 items-center gap-1">
+                          {it.phone && <a href={telLink(it.phone)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-600 dark:border-slate-700 dark:text-slate-300" title="Call"><Phone className="h-3.5 w-3.5" /><span className="hidden sm:inline">Call</span></a>}
+                          <button onClick={() => nav(it.to)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300" title="Open details"><ArrowUpRight className="h-3.5 w-3.5" /><span className="hidden sm:inline">Open</span></button>
                           </div>
                         </div>
                       );
