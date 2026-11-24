@@ -1,6 +1,7 @@
 // Stack screens: notifications, projects (+ detail) and support tickets (+ detail).
 import { useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Linking, Platform, RefreshControl, ScrollView, Text, TextInput, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Linking, Platform, RefreshControl, ScrollView, View } from "react-native";
+import { Text, TextInput } from "../components/Text";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Avatar, Badge, Card, Chip, ChipScroll, Empty, IconBtn, Press, Progress, Row, SearchBar, SectionTitle, T } from "../components/ui";

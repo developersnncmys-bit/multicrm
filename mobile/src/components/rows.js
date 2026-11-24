@@ -1,5 +1,6 @@
 // List rows reused across screens.
-import { Linking, Text, View } from "react-native";
+import { Linking, View } from "react-native";
+import { Text } from "./Text";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Avatar, Badge, Press, Row, T } from "./ui";

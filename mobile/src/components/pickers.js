@@ -1,5 +1,6 @@
 // Date and time pickers built from tappable chips — no native picker needed, works in Expo Go.
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { Text } from "./Text";
 import { Press, T } from "./ui";
 import { radius, useTheme } from "../theme";
 import { addDays, fmtDay, fmtTime, today } from "../utils";

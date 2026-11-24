@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Alert, Linking, ScrollView, Text, View } from "react-native";
+import { Alert, Linking, ScrollView, View } from "react-native";
+import { Text } from "../components/Text";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Avatar, Badge, Card, IconBtn, Input, Press, Row, SectionTitle, T } from "../components/ui";

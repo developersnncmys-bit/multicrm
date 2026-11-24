@@ -1,10 +1,12 @@
 // NNC CRM mobile — entry point: theme, data store, navigation.
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Text, View, useColorScheme } from "react-native";
+import { ActivityIndicator, View, useColorScheme } from "react-native";
+import { FONT_FILES, Text } from "./src/components/Text";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from "expo-font";
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -140,6 +142,7 @@ function Root() {
 }
 
 export default function App() {
+  const [fontsReady, fontError] = useFonts(FONT_FILES); // Poppins
   const system = useColorScheme();
   const [pref, setPref] = useState(null); // "light" | "dark" | null (follow phone)
   useEffect(() => { AsyncStorage.getItem("nnc_theme").then((v) => v && setPref(v)).catch(() => {}); }, []);
@@ -149,6 +152,8 @@ export default function App() {
     isDark,
     toggle: () => { const next = isDark ? "light" : "dark"; setPref(next); AsyncStorage.setItem("nnc_theme", next).catch(() => {}); },
   }), [isDark]);
+
+  if (!fontsReady && !fontError) return <View style={{ flex: 1, backgroundColor: theme.c.heroA }} />;
 
   return (
     <SafeAreaProvider>

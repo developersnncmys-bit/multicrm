@@ -1,6 +1,7 @@
 // Reports & P&L, Attendance, Company settings.
 import { useMemo, useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
+import { Text } from "../components/Text";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Avatar, Badge, Button, Card, Chip, ChipScroll, Input, Press, Progress, Row, Segmented, T } from "../components/ui";

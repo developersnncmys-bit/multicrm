@@ -7,7 +7,14 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 app.disable("x-powered-by");
-app.use(cors({ origin: env.origins.includes("*") ? true : env.origins }));
+// Allowed frontends: CLIENT_ORIGIN (comma-separated, "*" wildcards allowed, e.g. https://multicrm-*.vercel.app)
+// plus the production admin panel and local dev, so a missing env value never blocks the live site.
+const ALWAYS = ["https://multicrm-12.vercel.app", "http://localhost:5180", "http://localhost:5181", "http://localhost:5173"];
+const toRegex = (o) => new RegExp(`^${o.split("*").map((part) => part.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join("[^/.]*")}$`);
+const patterns = [...env.origins, ...ALWAYS].map(toRegex);
+app.use(cors({
+  origin: env.origins.includes("*") ? true : (origin, cb) => cb(null, !origin || patterns.some((rx) => rx.test(origin))),
+}));
 app.use(express.json({ limit: "25mb" })); // big enough for a full backup import
 
 // Friendly answer for the bare URL (the API itself lives under /api)

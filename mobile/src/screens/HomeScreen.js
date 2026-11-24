@@ -1,5 +1,6 @@
 import { useMemo, useCallback } from "react";
-import { Linking, RefreshControl, ScrollView, Text, View } from "react-native";
+import { Linking, RefreshControl, ScrollView, View } from "react-native";
+import { Text } from "../components/Text";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

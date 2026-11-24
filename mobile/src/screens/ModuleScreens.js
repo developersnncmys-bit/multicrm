@@ -1,7 +1,8 @@
 // Generic screens that render any section described in src/modules.js:
 // All-modules menu → list (search + filter chips) → detail (with actions) → add/edit sheet.
 import { useMemo, useState } from "react";
-import { Alert, FlatList, Linking, RefreshControl, ScrollView, Switch, Text, View } from "react-native";
+import { Alert, FlatList, Linking, RefreshControl, ScrollView, Switch, View } from "react-native";
+import { Text } from "../components/Text";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

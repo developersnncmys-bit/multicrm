@@ -1,6 +1,7 @@
 // Create / edit sheets: lead, schedule (call/meeting), payment, expense, and the "+" quick-create menu.
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { Linking, Text, View } from "react-native";
+import { Linking, View } from "react-native";
+import { Text } from "./Text";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Choice, Input, Press, Row, Sheet, T } from "./ui";
 import { DateStrip, TimeStrip } from "./pickers";
