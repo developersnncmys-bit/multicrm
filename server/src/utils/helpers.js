@@ -9,7 +9,9 @@ export const httpError = (status, message) => Object.assign(new Error(message), 
 // What the browser receives: no Mongo internals, never a password hash
 export const toClient = (doc) => {
   if (!doc) return doc;
-  const { _id, _ord, passwordHash, password, ...rest } = typeof doc.toObject === "function" ? doc.toObject() : doc;
+  const { _id, _ord, passwordHash, ...rest } = typeof doc.toObject === "function" ? doc.toObject() : doc;
+  // A user's login password is never sent. (Other records may have a "password" field on purpose — e.g. the credential vault.)
+  if ("role" in rest) delete rest.password;
   return rest;
 };
 

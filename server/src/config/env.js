@@ -1,11 +1,9 @@
 // Reads server/.env once and exposes typed settings.
 import "dotenv/config";
 
+// Throws (instead of exiting) so serverless hosts like Vercel show a clear error
 const required = (key) => {
-  if (!process.env[key]) {
-    console.error(`Missing ${key} in server/.env (see server/.env.example)`);
-    process.exit(1);
-  }
+  if (!process.env[key]) throw new Error(`Missing ${key} — set it in .env locally or in the host's Environment Variables`);
   return process.env[key];
 };
 

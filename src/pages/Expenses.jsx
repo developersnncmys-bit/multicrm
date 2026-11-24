@@ -7,6 +7,7 @@ import { useToast } from "../components/ui/Toast";
 import { Button, Card, CardHeader, PageHeader, StatCard, Modal, Field, Input, Select, SearchInput, Badge, EmptyState, Pagination, usePaged, useConfirm, cx } from "../components/ui";
 import { BRANCHES, EXPENSE_CATEGORIES, PAYMENT_MODES, DOC_STATUS_STYLE } from "../config/constants";
 import { inr, compactInr, fmtDate, todayISO, monthKey, monthLabel, lastMonths, downloadCSV, toISO } from "../utils/format";
+import FinanceGuide from "./finance/FinanceGuide";
 
 export const CAT_COLORS = {
   Rent: "#6366f1", Salary: "#0ea5e9", Electricity: "#f59e0b", Internet: "#14b8a6", "Software & Tools": "#8b5cf6",
@@ -125,7 +126,7 @@ export default function Expenses() {
 
   return (
     <div>
-      <PageHeader title="Expenses" subtitle="Track every rupee going out — rent, salaries, tools and more."
+      <PageHeader title="Expenses" subtitle="Step 3 · Every rupee going out — rent, salaries, tools and more. Use the arrows to change month."
         actions={<>
           <div className="flex items-center rounded-lg border border-slate-300/80 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <button onClick={() => setMonth((m) => shiftMonth(m, -1))} className="p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white" title="Previous month"><ChevronLeft className="h-4 w-4" /></button>
@@ -136,11 +137,12 @@ export default function Expenses() {
           <Button icon={Plus} onClick={() => { setErrors({}); setForm(empty()); }}>Add Expense</Button>
         </>} />
 
+      <FinanceGuide />
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label={`Spend — ${monthLabel(month)}`} value={inr(thisTotal)} icon={Wallet} tone="brand" delta={delta} deltaLabel="vs last month" />
-        <StatCard label="Pending bills" value={inr(sum(pending))} icon={Clock} tone="amber" sub={`${pending.length} bill${pending.length === 1 ? "" : "s"} to pay`} onClick={() => setStatus("Pending")} />
-        <StatCard label="Top category" value={byCat[0]?.name || "—"} icon={Layers} tone="violet" sub={byCat[0] ? `${inr(byCat[0].value)} · ${Math.round((byCat[0].value / (thisTotal || 1)) * 100)}% of spend` : "No spend yet"} />
-        <StatCard label="Avg monthly (6 mo)" value={compactInr(avgMonthly)} icon={TrendingUp} tone="sky" sub={branch || "All branches"} />
+        <StatCard label={`Spent in ${monthLabel(month)}`} value={inr(thisTotal)} icon={Wallet} tone="brand" delta={delta} deltaLabel="vs last month" />
+        <StatCard label="Bills you still have to pay" value={inr(sum(pending))} icon={Clock} tone="amber" sub={`${pending.length} bill${pending.length === 1 ? "" : "s"} to pay`} onClick={() => setStatus("Pending")} />
+        <StatCard label="Biggest cost" value={byCat[0]?.name || "—"} icon={Layers} tone="violet" sub={byCat[0] ? `${inr(byCat[0].value)} · ${Math.round((byCat[0].value / (thisTotal || 1)) * 100)}% of spend` : "No spend yet"} />
+        <StatCard label="Average per month" value={compactInr(avgMonthly)} icon={TrendingUp} tone="sky" sub={branch || "All branches"} />
       </div>
 
       {/* Rent status for every office */}

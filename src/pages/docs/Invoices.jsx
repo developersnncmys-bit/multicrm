@@ -10,6 +10,7 @@ import { docTotal, nextNumber, invoiceStatus, invoiceBalance, clientFromLead, wh
 import DocEditor from "./DocEditor";
 import DocPreview from "./DocPreview";
 import RecordPaymentModal from "./RecordPayment";
+import FinanceGuide from "../finance/FinanceGuide";
 
 export function PaymentHistory({ inv }) {
   const pays = inv.payments || [];
@@ -119,17 +120,18 @@ export default function Invoices() {
 
   return (
     <div>
-      <PageHeader title="Invoices" subtitle="Tax & proforma invoices with GST, payment tracking and reminders."
+      <PageHeader title="Invoices" subtitle="Step 1 · The bills you send to clients. A proforma is a quote-style bill asking for advance; a tax invoice is the final GST bill."
         actions={<>
           <Button variant="secondary" icon={Download} onClick={exportCSV}>Export</Button>
           <Button icon={Plus} onClick={() => setEditor({ initial: null })}>New invoice</Button>
         </>} />
 
+      <FinanceGuide />
       <div className="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard label="Total invoiced" value={compactInr(kpi.total)} icon={Receipt} tone="brand" sub={`${kpi.count} invoices`} />
-        <StatCard label="Collected" value={compactInr(kpi.collected)} icon={Wallet} tone="emerald" sub={kpi.total ? `${Math.round((kpi.collected / kpi.total) * 100)}% of invoiced` : "—"} />
-        <StatCard label="Outstanding" value={compactInr(kpi.outstanding)} icon={Clock} tone="amber" sub="yet to be received" />
-        <StatCard label="Overdue" value={compactInr(kpi.overdueAmt)} icon={AlertTriangle} tone="rose" sub={`${kpi.overdueCount} invoices past due`} onClick={() => setTab("Overdue")} />
+        <StatCard label="Received so far" value={compactInr(kpi.collected)} icon={Wallet} tone="emerald" sub={kpi.total ? `${Math.round((kpi.collected / kpi.total) * 100)}% of invoiced` : "—"} />
+        <StatCard label="Still to collect" value={compactInr(kpi.outstanding)} icon={Clock} tone="amber" sub="clients haven't paid yet" />
+        <StatCard label="Late payments" value={compactInr(kpi.overdueAmt)} icon={AlertTriangle} tone="rose" sub={`${kpi.overdueCount} bills past their due date · click to see`} onClick={() => setTab("Overdue")} />
       </div>
 
       <Card>

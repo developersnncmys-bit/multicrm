@@ -22,7 +22,7 @@ export default function seedAdmin(db) {
     const mode = t.type === "Call" ? "Phone" : t.type === "Meeting" ? pick(["Google Meet", "Office", "Google Meet"]) : t.type === "Demo" ? "Google Meet" : "Phone";
     let status = t.done ? "Done" : "Upcoming";
     if (!t.done && t.date < today && timed && rnd() > 0.6) status = "No-show";
-    const rec = { ...t, mode, duration: timed ? pick([30, 30, 45, 60]) : 30, status, meetLink: mode === "Google Meet" ? `https://meet.google.com/${Math.random().toString(36).slice(2, 5)}-${Math.random().toString(36).slice(2, 6)}-${Math.random().toString(36).slice(2, 5)}` : "", outcome: "", summary: "" };
+    const rec = { ...t, mode, duration: timed ? pick([30, 30, 45, 60]) : 30, status, meetLink: "", outcome: "", summary: "" };
     if (status === "Done" && timed) { rec.outcome = pick(OUTCOMES); rec.summary = pick(["Walked through the sitemap and pricing. Client wants a mobile-first design.", "Discussed timelines; client will share content by next week.", "Demo went well — decision maker joined. Asked for revised quote with SEO add-on.", "Reviewed staging site, 3 minor changes requested."]); }
     return rec;
   });

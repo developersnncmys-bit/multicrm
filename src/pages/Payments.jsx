@@ -9,6 +9,7 @@ import { PAYMENT_MODES, DOC_STATUS_STYLE } from "../config/constants";
 import { inr, compactInr, fmtDate, todayISO, toISO, addDays, downloadCSV, daysBetween, lastMonths, monthKey, monthLabel } from "../utils/format";
 import { docTotal, invoiceStatus, whatsappLink, reminderText } from "./docs/docUtils";
 import RecordPaymentModal from "./docs/RecordPayment";
+import FinanceGuide from "./finance/FinanceGuide";
 
 const CYCLE_DAYS = { Monthly: 1, Quarterly: 3, Yearly: 12 };
 const advance = (iso, cycle) => { const d = new Date(`${iso}T00:00:00`); d.setMonth(d.getMonth() + (CYCLE_DAYS[cycle] || 1)); return toISO(d); };
@@ -103,14 +104,15 @@ export default function Payments() {
 
   return (
     <div>
-      <PageHeader title="Payments & Collections" subtitle="Know exactly who owes you, what's coming in and what's already received."
+      <PageHeader title="Payments & Collections" subtitle="Step 2 · Who owes you money, what's coming in soon, and what you've already received."
         actions={<Button variant="secondary" icon={Eye} onClick={() => nav("/invoices")}>View invoices</Button>} />
+      <FinanceGuide />
 
       <div className="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
-        <StatCard label="Collected this month" value={compactInr(kpi.month)} icon={Wallet} tone="emerald" sub={`${kpi.monthCount} payments`} />
-        <StatCard label="Outstanding" value={compactInr(kpi.outstanding)} icon={Clock} tone="amber" sub={`${receivables.length} open invoices`} />
-        <StatCard label="Overdue" value={compactInr(kpi.overdue)} icon={AlertTriangle} tone="rose" sub={`${kpi.overdueCount} past due date`} />
-        <StatCard label="Expected next 30 days" value={compactInr(kpi.expected)} icon={CalendarClock} tone="sky" sub="incl. recurring services" />
+        <StatCard label="Received this month" value={compactInr(kpi.month)} icon={Wallet} tone="emerald" sub={`${kpi.monthCount} payments`} />
+        <StatCard label="Still to collect" value={compactInr(kpi.outstanding)} icon={Clock} tone="amber" sub={`${receivables.length} open invoices`} />
+        <StatCard label="Late payments" value={compactInr(kpi.overdue)} icon={AlertTriangle} tone="rose" sub={`${kpi.overdueCount} past due date`} />
+        <StatCard label="Coming in next 30 days" value={compactInr(kpi.expected)} icon={CalendarClock} tone="sky" sub="incl. recurring services" />
       </div>
 
       <div className="mb-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">

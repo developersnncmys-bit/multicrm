@@ -72,7 +72,8 @@ const blankForm = (user, cal, date, time, type) => ({
   title: "", type: type || "Meeting", date: date || todayISO(), time: time || "11:00", duration: 30, mode: type === "Call" ? "Phone" : "Google Meet", meetLink: "",
   clientMode: "crm", leadId: "", clientName: "", clientPhone: "", clientEmail: "", officeAddress: cal.officeAddress || "", amount: "", assigneeId: user?.id || "", notes: "",
 });
-const meetCode = () => { const r = (n) => Math.random().toString(36).slice(2, 2 + n); return `https://meet.google.com/${r(3)}-${r(4)}-${r(3)}`; };
+// Real Meet links can only be created by Google — open Meet's "new meeting" page; the user pastes the link back.
+const MEET_LINK_RE = /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}$/i;
 
 /* ── Lead search box ─────────────────────────────────────────── */
 function LeadPicker({ leads, value, onChange }) {
@@ -588,14 +589,14 @@ export default function CalendarPage() {
                 <Field label="Mode">
                   <div className="grid grid-cols-3 gap-2">
                     {MODES.map((m) => { const I = MODE_ICON[m]; return (
-                      <button type="button" key={m} onClick={() => setForm((f) => ({ ...f, mode: m, meetLink: m === "Google Meet" && !f.meetLink ? meetCode() : f.meetLink }))}
+                      <button type="button" key={m} onClick={() => setForm((f) => ({ ...f, mode: m, }))}
                         className={cx("flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-semibold transition", form.mode === m ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-200" : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300")}><I className="h-4 w-4" />{m === "Office" ? "Office meeting" : m === "Phone" ? "Phone call" : m}</button>
                     ); })}
                   </div>
                 </Field>
                 {form.mode === "Google Meet" && (
-                  <Field label="Google Meet link">
-                    <div className="flex gap-2"><Input value={form.meetLink} onChange={setF("meetLink")} placeholder="https://meet.google.com/…" /><Button type="button" variant="secondary" onClick={() => setForm((f) => ({ ...f, meetLink: meetCode() }))}>Generate</Button></div>
+                  <Field label="Google Meet link" hint={form.meetLink && !MEET_LINK_RE.test(form.meetLink.trim()) ? "This doesn't look like a Meet link — it should be like https://meet.google.com/abc-defg-hij" : "Click “Create in Google Meet”, copy the link from the Meet tab and paste it here"}>
+                    <div className="flex gap-2"><Input value={form.meetLink} onChange={(e) => setForm((f) => ({ ...f, meetLink: e.target.value.trim() }))} placeholder="https://meet.google.com/abc-defg-hij" /><Button type="button" variant="secondary" icon={Video} onClick={() => window.open("https://meet.google.com/new", "_blank", "noopener")}>Create in Google Meet</Button></div>
                   </Field>
                 )}
                 {form.mode === "Office" && <Field label="Office address"><Textarea rows={2} value={form.officeAddress} onChange={setF("officeAddress")} /></Field>}

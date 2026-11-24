@@ -1,5 +1,5 @@
 // Authorisation: the same role → module rules the frontend uses, enforced on the server.
-import { ROLES } from "../config/roles.js";
+import { ROLES, MODULES } from "../config/roles.js";
 
 export const isAdmin = (user) => user?.role === "Admin";
 
@@ -19,3 +19,8 @@ export const requireModule = (module) => (req, res, next) => {
   if (canAccess(req.user, module, write)) return next();
   res.status(403).json({ error: "You don't have permission for this module." });
 };
+
+// { leads: "edit", invoices: "view", … } — sent to apps (mobile) so they can show only allowed sections
+export const accessMap = (user) => Object.fromEntries(MODULES.map((m) => m.key)
+  .filter((k) => canAccess(user, k))
+  .map((k) => [k, canAccess(user, k, true) ? "edit" : "view"]));

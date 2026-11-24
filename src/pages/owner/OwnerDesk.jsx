@@ -244,7 +244,7 @@ export default function OwnerDesk() {
                       const isDone = !!done[it.id];
                       return (
                         <div key={it.id} className={cx("group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/40", isDone && "opacity-50")}>
-                          <button title={isDone ? "Mark as not finished" : "Mark as finished"} onClick={() => setDone((d) => ({ ...d, [it.id]: !d[it.id] }))} className={cx("flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition", isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-emerald-500 dark:border-slate-600")}><Check className="h-3 w-3" strokeWidth={3} /></button>
+                          <button title={isDone ? "Mark as not finished" : "Mark as finished"} onClick={() => { setDone((d) => ({ ...d, [it.id]: !d[it.id] })); toast(isDone ? "Moved back to To do" : "Marked as finished", isDone ? "info" : "success"); }} className={cx("flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition", isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-emerald-500 dark:border-slate-600")}><Check className="h-3 w-3" strokeWidth={3} /></button>
                           <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 sm:flex"><Icon className="h-4 w-4" /></span>
                           <div className="min-w-0 flex-1">
                             <p className={cx("truncate text-sm font-medium text-slate-800 dark:text-slate-100", isDone && "line-through")}>{it.title}</p>

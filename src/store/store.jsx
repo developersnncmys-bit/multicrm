@@ -8,12 +8,27 @@ import { buildSeed } from "../data/seed";
 import { applyWorkspace, defaultWorkspace } from "../config/workspace";
 import { uid } from "../utils/format";
 import { api, apiMode, getToken, setToken } from "../api/client";
+import { autoToast } from "../components/ui/Toast";
 
 const DB_KEY = "nexora_db_v3";
 const SESSION_KEY = "nexora_session";
 const THEME_KEY = "nexora_theme";
 
 const StoreCtx = createContext(null);
+
+// Names used in the automatic confirmation popups
+const LABELS = {
+  leads: "Lead", contacts: "Contact", companies: "Company", quotations: "Quotation", invoices: "Invoice", projects: "Project",
+  tasks: "Schedule", expenses: "Expense", employees: "Employee", tickets: "Ticket", products: "Service", campaigns: "Campaign",
+  users: "User", commitments: "Commitment", ownerNotes: "Note", recurring: "Recurring item", salaryRecords: "Salary record",
+  documents: "Document", templates: "Template", credentials: "Password", messages: "Message", dayPlans: "Day plan",
+  planTasks: "Task", workLogs: "Work log", bugs: "Bug", blockers: "Blocker", paymentFollowups: "Payment follow-up",
+  monthlyServices: "Monthly service", fundTxns: "Transaction", bankAccounts: "Bank account", automations: "Automation",
+  keywords: "Keyword", seoWork: "SEO work", seoClients: "SEO client", adsReports: "Ads report", integrations: "Integration",
+  portalDocs: "Document", portalTasks: "Task", portalMeetings: "Meeting", extras: "Item",
+};
+const SILENT = new Set(["notifications", "auditLog"]);
+const announce = (col, verb) => { if (!SILENT.has(col)) autoToast(`${LABELS[col] || "Item"} ${verb}`, verb === "deleted" ? "info" : "success"); };
 
 // Same shape as the demo data but with no records — used before/after sign-in in API mode
 function emptyDb() {
@@ -82,6 +97,7 @@ export function StoreProvider({ children }) {
     if (!apiMode) return;
     call().catch((e) => {
       setSyncError(e.message);
+      autoToast(`Not saved: ${e.message}`, "error");
       if (e.status === 401) { setToken(null); setSessionId(null); return; }
       reload().catch(() => {});
     });
@@ -90,6 +106,7 @@ export function StoreProvider({ children }) {
   const add = useCallback((col, item, prefix) => {
     const rec = { id: uid(prefix || col.slice(0, 1).toUpperCase()), ...item };
     setDb((d) => ({ ...d, [col]: [rec, ...(d[col] || [])] }));
+    announce(col, "added");
     sync(() => api(`/${col}`, { method: "POST", body: rec }));
     return rec;
   }, [sync]);
@@ -97,20 +114,24 @@ export function StoreProvider({ children }) {
     const cur = (dbRef.current[col] || []).find((r) => r.id === id);
     const p = typeof patch === "function" ? (cur ? patch(cur) : {}) : patch;
     setDb((d) => ({ ...d, [col]: (d[col] || []).map((r) => (r.id === id ? { ...r, ...p } : r)) }));
+    announce(col, "updated");
     sync(() => api(`/${col}/${encodeURIComponent(id)}`, { method: "PATCH", body: p }));
   }, [sync]);
   const remove = useCallback((col, id) => {
     setDb((d) => ({ ...d, [col]: (d[col] || []).filter((r) => r.id !== id) }));
+    announce(col, "deleted");
     sync(() => api(`/${col}/${encodeURIComponent(id)}`, { method: "DELETE" }));
   }, [sync]);
   const setSettings = useCallback((section, patch) => {
     const prev = dbRef.current.settings[section];
     const value = typeof patch === "object" && patch && !Array.isArray(patch) && prev && typeof prev === "object" ? { ...prev, ...patch } : patch;
     setDb((d) => ({ ...d, settings: { ...d.settings, [section]: value } }));
+    autoToast("Settings saved");
     sync(() => api(`/settings/${section}`, { method: "PUT", body: { value } }));
   }, [sync]);
   const setAttendance = useCallback((date, empId, rec) => {
     const key = `${date}|${empId}`;
+    autoToast("Attendance saved");
     setDb((d) => { const next = { ...d.attendance }; if (rec == null) delete next[key]; else next[key] = rec; return { ...d, attendance: next }; });
     sync(() => api("/attendance", { method: "PUT", body: { key, value: rec ?? null } }));
   }, [sync]);
@@ -119,10 +140,12 @@ export function StoreProvider({ children }) {
   }, [add]);
   const setAppConnection = useCallback((key, val) => {
     setDb((d) => ({ ...d, appConnections: { ...(d.appConnections || {}), [key]: val } }));
+    autoToast("App connection saved");
     sync(() => api(`/app-connections/${key}`, { method: "PUT", body: { value: val } }));
   }, [sync]);
   const markAllRead = useCallback(() => {
     setDb((d) => ({ ...d, notifications: d.notifications.map((n) => ({ ...n, read: true })) }));
+    autoToast("All notifications marked as read");
     sync(() => api("/notifications/read-all", { method: "POST" }));
   }, [sync]);
 

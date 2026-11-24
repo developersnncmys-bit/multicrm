@@ -130,3 +130,17 @@ Edit `src/config/brand.js` (product name, company, default colour) and `public/f
 ## Connecting a backend later
 
 All reads and writes go through `src/store/store.jsx` (`add`, `update`, `remove`, `setSettings`, `setAttendance`). To connect an API, replace those functions with calls to it. The data shapes are in `src/data/seed.js`.
+
+## Mobile app (React Native · Expo) — `mobile/`
+
+A phone app for the same CRM, using the same backend and logins.
+
+- **Screens:** Home (money collected, follow-ups, today's schedule), Leads (search, stage filters, call / WhatsApp / email, stage moves, notes), Schedule (week strip, mark done, join Meet), Money (to collect, received, expenses, WhatsApp payment reminders), Projects (milestones), Support tickets (chat replies), Notifications, Profile (dark mode, sign out).
+- **"+" button:** new lead, schedule a call/meeting, record a payment, add an expense.
+- Shows only the sections each user's role allows (the server sends an `access` map on login).
+
+```bash
+npm run server            # backend must be running
+cd mobile && npx expo start
+```
+Install **Expo Go** on your phone, keep phone and PC on the same Wi-Fi, scan the QR code. On the login screen, under **Server settings**, the address is `http://<your-PC-IP>:5000/api` (find the IP with `ipconfig`). If the phone can't connect, allow Node.js through Windows Firewall (Private networks).

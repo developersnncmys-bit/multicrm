@@ -12,6 +12,7 @@ import { useToast } from "../../components/ui/Toast";
 import { Button, Card, CardHeader, PageHeader, Badge, Modal, Field, Input, Select, Progress, EmptyState, useConfirm, cx } from "../../components/ui";
 import { inr, compactInr, fmtDate, todayISO, monthKey, monthLabel, lastMonths, downloadCSV } from "../../utils/format";
 import { allPayments, sumBy } from "../owner/ownerData";
+import FinanceGuide from "./FinanceGuide";
 
 const FUNDS = [
   { key: "Operating Buffer", icon: Wallet, color: "#6366f1", why: "Pays salaries & rent if collections stop" },
@@ -67,16 +68,17 @@ export default function Funds() {
 
   return (
     <div>
-      <PageHeader title="Reserve Funds" subtitle="Set money aside every month so salaries, taxes and surprises never become a crisis."
+      <PageHeader title="Reserve Funds" subtitle="Step 4 · Money you set aside so salaries, taxes and surprises never become a crisis."
         actions={<>
           <Button variant="secondary" icon={Settings2} onClick={() => setRules({ ...fin })}>Fund rules</Button>
           <Button variant="secondary" icon={Minus} onClick={() => setForm({ fund: FUNDS[0].key, type: "Withdrawal", amount: "", date: todayISO(), note: "" })}>Withdraw</Button>
           <Button icon={Plus} onClick={() => setForm({ fund: FUNDS[0].key, type: "Deposit", amount: "", date: todayISO(), note: "" })}>Add money</Button>
         </>} />
 
+      <FinanceGuide />
       <Card className="mb-6 grid gap-6 p-6 md:grid-cols-3">
         <div><p className="text-sm text-slate-500">Total in reserves</p><p className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">{inr(total)}</p><p className="mt-1 text-xs text-slate-500">{Math.round((total / (totalTarget || 1)) * 100)}% of the {compactInr(totalTarget)} goal</p><Progress value={(total / (totalTarget || 1)) * 100} className="mt-2" /></div>
-        <div><p className="text-sm text-slate-500">Runway</p><p className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">{runway} <span className="text-base font-medium text-slate-400">months</span></p><p className="mt-1 text-xs text-slate-500">If no money came in, reserves cover expenses of {inr(avgMonthlyExp)}/month for this long.</p></div>
+        <div><p className="text-sm text-slate-500">How long savings would last</p><p className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">{runway} <span className="text-base font-medium text-slate-400">months</span></p><p className="mt-1 text-xs text-slate-500">If no money came in, reserves cover expenses of {inr(avgMonthlyExp)}/month for this long.</p></div>
         <div><p className="text-sm text-slate-500">Last 12 months</p><p className="mt-1 text-sm text-slate-700 dark:text-slate-200">Collected <b>{compactInr(collected)}</b> · Spent <b>{compactInr(spent)}</b></p><p className="text-sm text-slate-700 dark:text-slate-200">Profit <b className="text-emerald-600">{compactInr(profit)}</b></p><p className="mt-1 text-xs text-slate-400">Targets below are calculated from these numbers.</p></div>
       </Card>
 

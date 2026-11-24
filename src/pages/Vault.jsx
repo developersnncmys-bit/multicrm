@@ -157,7 +157,7 @@ export default function Vault() {
             return (
               <Card key={c.id} className="flex flex-col p-5 transition hover:shadow-pop">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-extrabold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{c.title.slice(0, 1).toUpperCase()}</span>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-extrabold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{(c.title || "?").slice(0, 1).toUpperCase()}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-slate-900 dark:text-white">{c.title}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-1.5">
@@ -181,7 +181,7 @@ export default function Vault() {
                   </div>
                   <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 dark:bg-slate-800/60">
                     <span className="w-16 shrink-0 text-[11px] font-semibold uppercase text-slate-400">Pass</span>
-                    <span className="flex-1 truncate font-mono text-sm text-slate-700 dark:text-slate-200">{show ? c.password : "•".repeat(Math.min(14, c.password.length || 8))}</span>
+                    <span className="flex-1 truncate font-mono text-sm text-slate-700 dark:text-slate-200">{show ? c.password : "•".repeat(Math.min(14, (c.password || "").length || 8))}</span>
                     <button title={show ? "Hide" : "Reveal"} onClick={() => setRevealed((r) => ({ ...r, [c.id]: !r[c.id] }))} className="p-1 text-slate-400 hover:text-brand-600">{show ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</button>
                     <button title="Copy password" onClick={() => copy(c.password, "Password")} className="p-1 text-slate-400 hover:text-brand-600"><Copy className="h-3.5 w-3.5" /></button>
                   </div>
